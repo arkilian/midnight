@@ -1,0 +1,128 @@
+/**
+ * Simple Token Smart Contract
+ * 
+ * This contract implements a basic fungible token with:
+ * - Total supply tracking
+ * - Balance management per address
+ * - Transfer functionality
+ * 
+ * Concepts covered:
+ * - Mappings (key-value storage)
+ * - Address type
+ * - Balance tracking
+ * - Transfer logic with validation
+ */
+
+contract SimpleToken {
+  // State: token metadata and balances
+  state name: string;
+  state symbol: string;
+  state totalSupply: uint;
+  state balances: Map<address, uint>;
+
+  /**
+   * Initialize the token
+   * @param tokenName - Name of the token (e.g., "MyToken")
+   * @param tokenSymbol - Symbol of the token (e.g., "MTK")
+   * @param initialSupply - Initial token supply
+   * @param owner - Address to receive initial supply
+   */
+  entry initialize(
+    tokenName: string,
+    tokenSymbol: string,
+    initialSupply: uint,
+    owner: address
+  ) {
+    name = tokenName;
+    symbol = tokenSymbol;
+    totalSupply = initialSupply;
+    balances[owner] = initialSupply;
+  }
+
+  /**
+   * Transfer tokens from sender to recipient
+   * @param recipient - Address to receive tokens
+   * @param amount - Amount of tokens to transfer
+   * @returns true if transfer successful
+   */
+  entry transfer(recipient: address, amount: uint): bool {
+    // Get sender's balance
+    let senderBalance = balances[msg.sender] || 0;
+    
+    // Validate sufficient balance
+    if (senderBalance < amount) {
+      return false;
+    }
+
+    // Get recipient's balance
+    let recipientBalance = balances[recipient] || 0;
+
+    // Perform transfer
+    balances[msg.sender] = senderBalance - amount;
+    balances[recipient] = recipientBalance + amount;
+
+    return true;
+  }
+
+  /**
+   * Get balance of an address
+   * @param account - Address to query
+   * @returns Token balance of the account
+   */
+  entry balanceOf(account: address): uint {
+    return balances[account] || 0;
+  }
+
+  /**
+   * Get token name
+   * @returns Token name
+   */
+  entry getName(): string {
+    return name;
+  }
+
+  /**
+   * Get token symbol
+   * @returns Token symbol
+   */
+  entry getSymbol(): string {
+    return symbol;
+  }
+
+  /**
+   * Get total supply
+   * @returns Total token supply
+   */
+  entry getTotalSupply(): uint {
+    return totalSupply;
+  }
+
+  /**
+   * Mint new tokens (simplified - no access control)
+   * @param account - Address to receive new tokens
+   * @param amount - Amount of tokens to mint
+   */
+  entry mint(account: address, amount: uint) {
+    let currentBalance = balances[account] || 0;
+    balances[account] = currentBalance + amount;
+    totalSupply = totalSupply + amount;
+  }
+
+  /**
+   * Burn tokens from sender's balance
+   * @param amount - Amount of tokens to burn
+   * @returns true if burn successful
+   */
+  entry burn(amount: uint): bool {
+    let senderBalance = balances[msg.sender] || 0;
+    
+    if (senderBalance < amount) {
+      return false;
+    }
+
+    balances[msg.sender] = senderBalance - amount;
+    totalSupply = totalSupply - amount;
+
+    return true;
+  }
+}

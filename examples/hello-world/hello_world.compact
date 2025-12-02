@@ -1,0 +1,40 @@
+/**
+ * Hello World Smart Contract
+ * 
+ * This is the simplest Compact smart contract example.
+ * It demonstrates basic contract structure with state and entry points.
+ * 
+ * Concepts covered:
+ * - Contract declaration
+ * - State variables
+ * - Entry points (public functions)
+ */
+
+contract HelloWorld {
+  // State: persistent storage that survives across transactions
+  state message: string;
+
+  /**
+   * Entry point to set a message
+   * @param msg - The message to store
+   */
+  entry setMessage(msg: string) {
+    message = msg;
+  }
+
+  /**
+   * Entry point to retrieve the current message
+   * @returns The stored message
+   */
+  entry getMessage(): string {
+    return message;
+  }
+
+  /**
+   * Entry point to initialize the contract
+   * @param initialMessage - The initial message
+   */
+  entry initialize(initialMessage: string) {
+    message = initialMessage;
+  }
+}

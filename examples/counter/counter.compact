@@ -1,0 +1,81 @@
+/**
+ * Counter Smart Contract
+ * 
+ * This contract demonstrates state management with numeric values.
+ * It shows how to increment, decrement, and reset a counter.
+ * 
+ * Concepts covered:
+ * - Numeric state management
+ * - Multiple entry points
+ * - State validation
+ * - Return values
+ */
+
+contract Counter {
+  // State: persistent counter value
+  state count: uint;
+
+  /**
+   * Initialize the counter with a starting value
+   * @param initialValue - Starting count value
+   */
+  entry initialize(initialValue: uint) {
+    count = initialValue;
+  }
+
+  /**
+   * Increment the counter by 1
+   */
+  entry increment() {
+    count = count + 1;
+  }
+
+  /**
+   * Decrement the counter by 1
+   * Prevents underflow by checking if count > 0
+   */
+  entry decrement() {
+    if (count > 0) {
+      count = count - 1;
+    }
+  }
+
+  /**
+   * Increment by a specific amount
+   * @param amount - Amount to add to the counter
+   */
+  entry incrementBy(amount: uint) {
+    count = count + amount;
+  }
+
+  /**
+   * Reset the counter to zero
+   */
+  entry reset() {
+    count = 0;
+  }
+
+  /**
+   * Get the current count value
+   * @returns The current counter value
+   */
+  entry getCount(): uint {
+    return count;
+  }
+
+  /**
+   * Check if counter is at zero
+   * @returns true if count is 0, false otherwise
+   */
+  entry isZero(): bool {
+    return count == 0;
+  }
+
+  /**
+   * Set the counter to a specific value
+   * @param newValue - The new counter value
+   */
+  entry setCount(newValue: uint) {
+    count = newValue;
+  }
+}
