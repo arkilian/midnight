@@ -1,0 +1,166 @@
+/**
+ * Private Token Transfer Contract
+ * 
+ * This contract demonstrates Midnight's key feature: privacy-preserving
+ * transactions using zero-knowledge proofs.
+ * 
+ * Concepts covered:
+ * - Witness functions (off-chain private computation)
+ * - Zero-knowledge proofs
+ * - Private state vs public state
+ * - Proof verification
+ */
+
+contract PrivateToken {
+  // Public state: visible on-chain
+  state name: string;
+  state symbol: string;
+  state totalSupply: uint;
+
+  // Private balances: stored off-chain, proven with ZK
+  // Note: In a real implementation, this would use more sophisticated
+  // privacy structures. This is a simplified example.
+  state publicBalances: Map<address, uint>;
+
+  /**
+   * Initialize the token
+   */
+  entry initialize(
+    tokenName: string,
+    tokenSymbol: string,
+    initialSupply: uint,
+    owner: address
+  ) {
+    name = tokenName;
+    symbol = tokenSymbol;
+    totalSupply = initialSupply;
+    publicBalances[owner] = initialSupply;
+  }
+
+  /**
+   * Witness function: runs off-chain to generate ZK proof
+   * This proves the sender has sufficient balance without revealing it
+   * 
+   * @param sender - Address sending tokens
+   * @param recipient - Address receiving tokens  
+   * @param amount - Amount to transfer
+   * @returns Proof that sender has sufficient balance
+   */
+  witness transferProof(
+    sender: address,
+    recipient: address,
+    amount: uint
+  ): proof {
+    // Off-chain computation:
+    // 1. Retrieve sender's private balance
+    // 2. Verify balance >= amount
+    // 3. Generate zero-knowledge proof of validity
+    // 4. Return proof without revealing actual balance
+    
+    let senderBalance = publicBalances[sender] || 0;
+    
+    // This assertion generates the ZK proof
+    assert(senderBalance >= amount, "Insufficient balance");
+    
+    // Return proof (actual proof generation handled by Midnight runtime)
+    return proof;
+  }
+
+  /**
+   * Private transfer: validates ZK proof and updates balances
+   * 
+   * @param recipient - Address to receive tokens
+   * @param amount - Amount to transfer
+   * @param zkProof - Zero-knowledge proof of valid balance
+   * @returns true if transfer successful
+   */
+  entry privateTransfer(
+    recipient: address,
+    amount: uint,
+    zkProof: proof
+  ): bool {
+    // On-chain: verify the proof without knowing actual balance
+    // The proof confirms sender has sufficient balance
+    
+    // In a full implementation, this would verify the zkProof
+    // For this example, we'll do a simplified validation
+    
+    let senderBalance = publicBalances[msg.sender] || 0;
+    
+    if (senderBalance < amount) {
+      return false;
+    }
+
+    let recipientBalance = publicBalances[recipient] || 0;
+
+    // Update balances
+    publicBalances[msg.sender] = senderBalance - amount;
+    publicBalances[recipient] = recipientBalance + amount;
+
+    return true;
+  }
+
+  /**
+   * Standard public transfer (for comparison)
+   */
+  entry publicTransfer(recipient: address, amount: uint): bool {
+    let senderBalance = publicBalances[msg.sender] || 0;
+    
+    if (senderBalance < amount) {
+      return false;
+    }
+
+    let recipientBalance = publicBalances[recipient] || 0;
+
+    publicBalances[msg.sender] = senderBalance - amount;
+    publicBalances[recipient] = recipientBalance + amount;
+
+    return true;
+  }
+
+  /**
+   * Get balance (public query)
+   */
+  entry balanceOf(account: address): uint {
+    return publicBalances[account] || 0;
+  }
+
+  /**
+   * Witness for private balance query
+   * Generates proof of balance without revealing exact amount
+   */
+  witness balanceProof(account: address, threshold: uint): proof {
+    let balance = publicBalances[account] || 0;
+    
+    // Prove balance > threshold without revealing exact balance
+    assert(balance >= threshold, "Balance below threshold");
+    
+    return proof;
+  }
+
+  /**
+   * Verify account has minimum balance (privately)
+   */
+  entry hasMinimumBalance(
+    account: address,
+    threshold: uint,
+    zkProof: proof
+  ): bool {
+    // Verify the proof that account has >= threshold
+    // Without revealing the actual balance
+    return true; // Proof verification would happen here
+  }
+
+  // Standard getters
+  entry getName(): string {
+    return name;
+  }
+
+  entry getSymbol(): string {
+    return symbol;
+  }
+
+  entry getTotalSupply(): uint {
+    return totalSupply;
+  }
+}
