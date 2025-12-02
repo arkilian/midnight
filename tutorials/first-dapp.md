@@ -104,8 +104,8 @@ contract PrivateVoting {
    * Witness: Generate proof of eligibility without revealing voter
    */
   witness eligibilityProof(voter: address): proof {
-    assert(eligibleVoters[voter] == true, "Not eligible to vote");
-    assert(hasVoted[voter] != true, "Already voted");
+    assert(eligibleVoters[voter], "Not eligible to vote");
+    assert(!hasVoted[voter], "Already voted");
     return proof;
   }
 
@@ -118,9 +118,9 @@ contract PrivateVoting {
     choice: bool
   ): proof {
     // Verify eligibility
-    assert(eligibleVoters[voter] == true, "Not eligible");
-    assert(hasVoted[voter] != true, "Already voted");
-    assert(votingOpen == true, "Voting closed");
+    assert(eligibleVoters[voter], "Not eligible");
+    assert(!hasVoted[voter], "Already voted");
+    assert(votingOpen, "Voting closed");
     
     // The actual vote (true = yes, false = no) is proven
     // but not revealed on-chain

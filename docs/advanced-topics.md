@@ -59,8 +59,12 @@ contract WhitelistVerification {
     account: address,
     merkleProof: bytes32[]
   ): proof {
+    // Note: In actual Compact implementation, use appropriate hash function
+    // This is pseudocode for illustration purposes
+    // Compact may provide hash functions like hash() or similar
+    
     // Compute leaf hash
-    let leaf = keccak256(account);
+    let leaf = hash(account);  // Use Compact's hash function
     let computedHash = leaf;
 
     // Verify Merkle path
@@ -68,9 +72,9 @@ contract WhitelistVerification {
       let proofElement = merkleProof[i];
       
       if (computedHash < proofElement) {
-        computedHash = keccak256(computedHash, proofElement);
+        computedHash = hash(computedHash, proofElement);
       } else {
-        computedHash = keccak256(proofElement, computedHash);
+        computedHash = hash(proofElement, computedHash);
       }
     }
 
@@ -102,7 +106,8 @@ contract PrivateNFT {
     secret: bytes32
   ): (proof, bytes32) {
     // Nullifier = hash(tokenId, secret)
-    let nullifier = keccak256(tokenId, secret);
+    // Note: Use Compact's built-in hash function
+    let nullifier = hash(tokenId, secret);
     
     // Verify not already used
     assert(!usedNullifiers[nullifier], "Already spent");
@@ -144,7 +149,8 @@ contract SealedBidAuction {
     salt: bytes32
   ): bytes32 {
     // Commitment = hash(bidAmount, salt)
-    let commitment = keccak256(bidAmount, salt);
+    // Note: Use Compact's built-in hash function
+    let commitment = hash(bidAmount, salt);
     return commitment;
   }
 
@@ -163,7 +169,7 @@ contract SealedBidAuction {
     salt: bytes32,
     commitment: bytes32
   ): proof {
-    let computed = keccak256(bidAmount, salt);
+    let computed = hash(bidAmount, salt);
     assert(computed == commitment, "Invalid reveal");
     return proof;
   }
@@ -510,7 +516,9 @@ contract ShieldedTransfer {
     amount: uint
   ): (proof, bytes32) {
     // Encrypt recipient address
-    let shieldedAddress = encrypt(recipient, encryptionKey);
+    // Note: Actual encryption would use Compact's cryptographic primitives
+    // This is pseudocode for illustration
+    let shieldedAddress = hash(recipient, encryptionKey);  // Simplified
     
     return (proof, shieldedAddress);
   }

@@ -98,11 +98,18 @@ contract SimpleToken {
   }
 
   /**
-   * Mint new tokens (simplified - no access control)
+   * Mint new tokens
+   * ⚠️ WARNING: This is a SIMPLIFIED example for learning purposes!
+   * In production, this function MUST have access control.
+   * Only authorized addresses should be able to mint tokens.
+   * 
    * @param account - Address to receive new tokens
    * @param amount - Amount of tokens to mint
    */
   entry mint(account: address, amount: uint) {
+    // ⚠️ TODO: Add access control (e.g., onlyOwner check)
+    // Example: if (msg.sender != owner) return;
+    
     let currentBalance = balances[account] || 0;
     balances[account] = currentBalance + amount;
     totalSupply = totalSupply + amount;

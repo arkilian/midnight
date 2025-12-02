@@ -68,12 +68,21 @@ npm cache clean --force
 # Remove node_modules and package-lock.json
 rm -rf node_modules package-lock.json
 
+# Check Node.js version compatibility
+node --version  # Should be v18+
+
 # Reinstall
 npm install
 
-# If still failing, try with --legacy-peer-deps
+# If still failing due to peer dependency conflicts:
+# First try to resolve the dependency versions manually
+# Check package.json for version conflicts
+
+# As a last resort (not recommended for production):
 npm install --legacy-peer-deps
 ```
+
+**Note**: The `--legacy-peer-deps` flag should only be used as a last resort, as it can mask dependency issues. Always try to resolve version conflicts properly first.
 
 ## Compilation Errors
 

@@ -36,26 +36,37 @@ If not installed, download from [nodejs.org](https://nodejs.org/)
 
 ### 2. Get Midnight Development Tools
 
-Visit the [Midnight Developer Hub](https://midnight.network/developer-hub) to download:
+Visit the [Midnight Developer Hub](https://midnight.network/developer-hub) to download the required tools.
 
 #### Compact Compiler
-The compiler that converts your `.compact` files into deployable contracts:
+
+Download and install the Compact compiler from the official Midnight website. Follow the installation instructions provided in the [official documentation](https://docs.midnight.network/install/).
+
 ```bash
-# Example installation (adjust based on official instructions)
+# Installation command will vary based on your OS
+# Check the official docs for the latest instructions:
+# https://docs.midnight.network/install/
+
+# Example (verify with official docs):
 npm install -g @midnight-ntwrk/compact-compiler
 ```
 
 #### Midnight CLI
+
 Command-line tools for deployment and interaction:
 ```bash
+# Check official documentation for installation
 npm install -g @midnight-ntwrk/cli
 ```
 
 #### Midnight SDK
+
 Development libraries for building DApps:
 ```bash
 npm install @midnight-ntwrk/sdk
 ```
+
+**Note**: Always refer to the [official installation guide](https://docs.midnight.network/install/) for the most up-to-date installation instructions.
 
 ### 3. Set Up Your Workspace
 
